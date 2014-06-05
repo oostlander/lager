@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "avl_baum.h"
 
 struct Listnode{
 	int zahl;
@@ -12,6 +13,11 @@ const int COMMAND_NUM = 4;
 const int COMMAND_NONE = -1;
 const int COMMAND_MULTIPLE = -2;
 struct Listnode* liste; // a pointer to the first Element of the List
+
+void avl_create(AVL_baum *b)
+{
+* b = NULL;
+}
 
 void print_list(struct Listnode* list)
 {
@@ -28,86 +34,6 @@ void print_list(struct Listnode* list)
 	}
 }
 
-//delets every element in "start"
-void del_list(struct Listnode **start)
-{
-	struct Listnode *pointer1, *pointer2;
-	while (*start != NULL)
-	{
-		pointer1 = *start;
-		pointer2 = pointer1->next;
-		*start = pointer2;
-		free(pointer1);
-	}
-}
-
-//inserts the "number" in the first place in the "list" given; please note that the pointer to the pointer of the list ist needed!
-void insert(Listnode **list, int number)
-{
-	struct Listnode *element_new = (Listnode *)malloc(sizeof(Listnode));
-	element_new->zahl = number;
-	element_new->next = *list;
-	*list = element_new;
-}
-
-//counts the length "list"
-int list_length(Listnode *list)
-{
-	struct Listnode *element; //the current element we are looking at while counting
-	int i = 0;
-	element = list;
-	if (element != NULL)
-	{
-		while (element != NULL)
-		{
-			i++;
-			element = element->next;
-		}
-	}
-	else
-	{
-		return 0;
-	}
-	return i;
-}
-
-//removes "element" from "list". Returns true if sucessfull, false if element could not be removed (e.g. not existent)
-bool element_remove(struct Listnode **list, int element)
-{
-	return true;
-}
-
-//places a new element"number" at the right place in an already sorted "list"(ascending order). 
-void insert_sort(Listnode **list, int number)
-{
-	struct Listnode *element_new = (Listnode *)malloc(sizeof(Listnode));
-	struct Listnode *current_element = NULL;
-	element_new->zahl = number;
-	current_element = *list;
-	if (current_element != NULL)
-	{
-		while ((current_element->next != NULL) && (current_element->next->zahl < number))
-		{
-			current_element = current_element->next;
-		}
-		if ((current_element == *list) && (current_element->zahl > number))
-		{
-			element_new->next = *list;
-			*list = element_new;
-		}
-		else
-		{
-			element_new->next = current_element->next;
-			current_element->next = element_new;
-		}
-	}
-	else
-	{
-		element_new->next = *list;
-		*list = element_new;
-	}
-
-}
 
 //prints the command defined by "command"
 void print_command(int command, bool *terminate, char var[20])
@@ -123,8 +49,7 @@ void print_command(int command, bool *terminate, char var[20])
 		printf("available commands:\n    help   displays this message\n    list   prints the current list\n    exit   exit the programm\n");
 		break;
 	case 1:
-		printf("list entries:(%d)\n", list_length(liste));
-		print_list(liste);
+		//print list
 		break;
 	case 2:
 		*terminate = true;
@@ -187,13 +112,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else
 		{
-			insert_sort(&liste, (int)strtol(var, NULL, 10));
-			printf("list entries:(%d)\n", list_length(liste));
 			print_list(liste);
 			printf("please enter a number:\n");
 		}
 	}
-	del_list(&liste);
 	return 0;
 }
 

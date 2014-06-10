@@ -4,6 +4,10 @@
 #include "stdafx.h"
 #include "avl_baum.h"
 
+void datensatz_ausgeben(AVL_knoten *a);
+void avl_write(AVL_baum b, int tiefe);
+void avl_einfuegen(Datensatz d, AVL_baum *b);
+
 struct Listnode{
 	int zahl;
 	struct Listnode* next;
@@ -13,11 +17,6 @@ const int COMMAND_NUM = 4;
 const int COMMAND_NONE = -1;
 const int COMMAND_MULTIPLE = -2;
 struct Listnode* liste; // a pointer to the first Element of the List
-
-void avl_create(AVL_baum *b)
-{
-* b = NULL;
-}
 
 void print_list(struct Listnode* list)
 {
@@ -70,7 +69,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	liste = NULL;
 	char commands[COMMAND_NUM][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };
 	int command = -1;
-
+	SchluesselTyp s = { NULL, NULL, NULL };
+	avl_knoten knoten = { 12, "test", 1, 1, 1, s };
+	knoten.avl_daten.schluessel.Bezeichner = knoten.avl_daten.Bezeichner;
+	knoten.avl_daten.schluessel.Elementnummer = &knoten.avl_daten.Elementnummer;
+	knoten.avl_daten.schluessel.Teilenummer = &knoten.avl_daten.Teilenummer;
+	datensatz_ausgeben(&knoten);
 	printf("Listbuilder v1.1\n(c) Klaas P. Oostlander\nThis Program builds a linked list of numbers from user-input\nPlease enter a number:\n");
 	char var[20];    // This is the variable to store input.
 	int i = 0;

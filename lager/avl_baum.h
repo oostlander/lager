@@ -1,7 +1,18 @@
 #ifndef AVL_BAUM_H
 #define AVL_BAUM_H
-#include "schluesseltyp.h"
-#include "datensatz.h"
+struct SchluesselTyp{
+	long			*Teilenummer;
+	char			*Bezeichner;
+	int				*Elementnummer;
+};
+struct Datensatz{
+	long			Teilenummer;
+	char			Bezeichner[30];
+	int				Elementnummer;
+	float			Breite;
+	float			Gewicht;
+	SchluesselTyp	schluessel;
+};
 /* Knoten im binaeren Suchbaum */
 typedef struct avl_knoten {
 	/* im Knoten abgelegte Daten */

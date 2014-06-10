@@ -5,8 +5,6 @@
 #include "avl_baum.h"
 
 void datensatz_ausgeben(AVL_knoten *a);
-void avl_write(AVL_baum b, int tiefe);
-void avl_einfuegen(Datensatz d, AVL_baum *b);
 
 struct Listnode{
 	int zahl;
@@ -69,12 +67,35 @@ int _tmain(int argc, _TCHAR* argv[])
 	liste = NULL;
 	char commands[COMMAND_NUM][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };
 	int command = -1;
+	AVL_baum baum;
+	avl_create(&baum);
 	SchluesselTyp s = { NULL, NULL, NULL };
-	avl_knoten knoten = { 12, "test", 1, 1, 1, s };
-	knoten.avl_daten.schluessel.Bezeichner = knoten.avl_daten.Bezeichner;
-	knoten.avl_daten.schluessel.Elementnummer = &knoten.avl_daten.Elementnummer;
-	knoten.avl_daten.schluessel.Teilenummer = &knoten.avl_daten.Teilenummer;
-	datensatz_ausgeben(&knoten);
+	Datensatz temp_data = { 12, "test", 1, 1, 1, s };
+	temp_data.schluessel.Bezeichner = temp_data.Bezeichner;
+	temp_data.schluessel.Elementnummer = &temp_data.Elementnummer;
+	temp_data.schluessel.Teilenummer = &temp_data.Teilenummer;
+	avl_einfuegen(temp_data, &baum);
+	Datensatz temp_data1 = { 11, "test", 1, 1, 1, s };
+	temp_data1.schluessel.Bezeichner = temp_data1.Bezeichner;
+	temp_data1.schluessel.Elementnummer = &temp_data1.Elementnummer;
+	temp_data1.schluessel.Teilenummer = &temp_data1.Teilenummer;
+	avl_einfuegen(temp_data1, &baum);
+	Datensatz temp_data2 = { 13, "test", 1, 1, 1, s };
+	temp_data2.schluessel.Bezeichner = temp_data2.Bezeichner;
+	temp_data2.schluessel.Elementnummer = &temp_data2.Elementnummer;
+	temp_data2.schluessel.Teilenummer = &temp_data2.Teilenummer;
+	avl_einfuegen(temp_data2, &baum);
+	Datensatz temp_data3 = { 14, "test", 1, 1, 1, s };
+	temp_data3.schluessel.Bezeichner = temp_data3.Bezeichner;
+	temp_data3.schluessel.Elementnummer = &temp_data3.Elementnummer;
+	temp_data3.schluessel.Teilenummer = &temp_data3.Teilenummer;
+	avl_einfuegen(temp_data3, &baum);
+	// testing rotation of Nodes
+	Datensatz temp_data4 = { 15, "test", 1, 1, 1, s };
+	temp_data4.schluessel.Bezeichner = temp_data4.Bezeichner;
+	temp_data4.schluessel.Elementnummer = &temp_data4.Elementnummer;
+	temp_data4.schluessel.Teilenummer = &temp_data4.Teilenummer;
+	avl_einfuegen(temp_data4, &baum);
 	printf("Listbuilder v1.1\n(c) Klaas P. Oostlander\nThis Program builds a linked list of numbers from user-input\nPlease enter a number:\n");
 	char var[20];    // This is the variable to store input.
 	int i = 0;

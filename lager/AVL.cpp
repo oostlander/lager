@@ -4,12 +4,12 @@
 
 bool gleich(SchluesselTyp s1, SchluesselTyp s2)
 {
-	return false;
+	return *s1.Teilenummer == *s2.Teilenummer;
 }
 
 bool kleiner(SchluesselTyp s1, SchluesselTyp s2)
 {
-	return false;
+	return *s1.Teilenummer < *s2.Teilenummer;
 }
 
 void avl_create(AVL_baum *b)

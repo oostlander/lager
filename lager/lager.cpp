@@ -1,6 +1,3 @@
-// lager.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
-//
-
 #include "stdafx.h"
 #include "avl_baum.h"
 
@@ -30,7 +27,6 @@ void print_list(struct Listnode* list)
 		}
 	}
 }
-
 
 //prints the command defined by "command"
 void print_command(int command, bool *terminate, char var[20])
@@ -62,40 +58,62 @@ void print_command(int command, bool *terminate, char var[20])
 	}
 }
 
+Datensatz bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht)
+{
+	SchluesselTyp s = { NULL, NULL, NULL };
+	Datensatz *temp_data = (Datensatz*)malloc(sizeof(Datensatz));
+	//Datensatz temp_data = { Teilenummer, "test", Elementnummer, Breite, Gewicht, s };
+	temp_data->Teilenummer = Teilenummer;
+	strncpy_s(temp_data->Bezeichner, 29, bez, 29);
+	temp_data->Elementnummer = Elementnummer;
+	temp_data->Breite = Breite;
+	temp_data->Gewicht = Gewicht;
+	temp_data->schluessel.Bezeichner = temp_data->Bezeichner;
+	temp_data->schluessel.Elementnummer = &temp_data->Elementnummer;
+	temp_data->schluessel.Teilenummer = &temp_data->Teilenummer;
+	return *temp_data;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+	////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////
+
+
+
+
 	liste = NULL;
 	char commands[COMMAND_NUM][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };
 	int command = -1;
 	AVL_baum baum;
 	avl_create(&baum);
-	SchluesselTyp s = { NULL, NULL, NULL };
-	Datensatz temp_data = { 12, "test", 1, 1, 1, s };
-	temp_data.schluessel.Bezeichner = temp_data.Bezeichner;
-	temp_data.schluessel.Elementnummer = &temp_data.Elementnummer;
-	temp_data.schluessel.Teilenummer = &temp_data.Teilenummer;
-	avl_einfuegen(temp_data, &baum);
-	Datensatz temp_data1 = { 11, "test", 1, 1, 1, s };
-	temp_data1.schluessel.Bezeichner = temp_data1.Bezeichner;
-	temp_data1.schluessel.Elementnummer = &temp_data1.Elementnummer;
-	temp_data1.schluessel.Teilenummer = &temp_data1.Teilenummer;
-	avl_einfuegen(temp_data1, &baum);
-	Datensatz temp_data2 = { 13, "test", 1, 1, 1, s };
-	temp_data2.schluessel.Bezeichner = temp_data2.Bezeichner;
-	temp_data2.schluessel.Elementnummer = &temp_data2.Elementnummer;
-	temp_data2.schluessel.Teilenummer = &temp_data2.Teilenummer;
-	avl_einfuegen(temp_data2, &baum);
-	Datensatz temp_data3 = { 14, "test", 1, 1, 1, s };
-	temp_data3.schluessel.Bezeichner = temp_data3.Bezeichner;
-	temp_data3.schluessel.Elementnummer = &temp_data3.Elementnummer;
-	temp_data3.schluessel.Teilenummer = &temp_data3.Teilenummer;
-	avl_einfuegen(temp_data3, &baum);
-	// testing rotation of Nodes
-	Datensatz temp_data4 = { 15, "test", 1, 1, 1, s };
-	temp_data4.schluessel.Bezeichner = temp_data4.Bezeichner;
-	temp_data4.schluessel.Elementnummer = &temp_data4.Elementnummer;
-	temp_data4.schluessel.Teilenummer = &temp_data4.Teilenummer;
-	avl_einfuegen(temp_data4, &baum);
+
+	////////////////// read in the Data from File ///////////////
+	long t_Teilenummer;
+	char t_Bezeichner[30];
+	float t_Breite, t_Gewicht;
+	int number;
+
+	FILE* in_file = fopen("test.data", "r"); // read only  
+
+	if (!in_file) // equivalent to saying if ( in_file == NULL ) 
+	{
+		printf("oops, file can't be read\n");
+	}
+
+	// attempt to read the next line and store 
+	// the value in the "number" variable 
+	while (fscanf(in_file, "%d %s %f %f", &t_Teilenummer, &t_Bezeichner, &t_Breite, &t_Gewicht) == 4)
+	{
+		avl_einfuegen(bulid_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &baum);
+		printf("We just read %d\n", t_Teilenummer);
+	}
+	fclose(in_file);
+	///////////////////// reading in done //////////////////////
+	avl_write(baum, 1);
+
 	printf("Listbuilder v1.1\n(c) Klaas P. Oostlander\nThis Program builds a linked list of numbers from user-input\nPlease enter a number:\n");
 	char var[20];    // This is the variable to store input.
 	int i = 0;
@@ -141,6 +159,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			printf("please enter a number:\n");
 		}
 	}
+
 	return 0;
 }
-

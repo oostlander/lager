@@ -74,16 +74,9 @@ Datensatz bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Br
 	return *temp_data;
 }
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-
-	////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////
-
-
-
-
 	liste = NULL;
 	char commands[COMMAND_NUM][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };
 	int command = -1;

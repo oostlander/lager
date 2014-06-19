@@ -32,4 +32,5 @@ AVL_knoten *avl_suchen(SchluesselTyp s,
 void avl_einfuegen(Datensatz d, AVL_baum *b);
 void avl_loeschen(SchluesselTyp s, AVL_baum *b);
 void avl_write(AVL_baum b, int tiefe);
+bool avl_gleich(SchluesselTyp s1, SchluesselTyp s2);
 #endif

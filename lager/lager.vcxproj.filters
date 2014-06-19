@@ -27,6 +27,12 @@
     <ClInclude Include="avl_baum.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="storage.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="llist.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +42,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="AVL.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="storage.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="llist.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

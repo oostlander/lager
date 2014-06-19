@@ -154,3 +154,23 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+*.inspxeproj
+lager/My Inspector XE Results - lager/r000mi1/config/analysis_type.cfg
+lager/My Inspector XE Results - lager/r000mi1/config/collection.cfg
+lager/My Inspector XE Results - lager/r000mi1/config/context_values.cfg
+lager/My Inspector XE Results - lager/r000mi1/config/panes3.code_locations_pane.xml
+lager/My Inspector XE Results - lager/r000mi1/config/panes3.dynamic_pane.xml
+lager/My Inspector XE Results - lager/r000mi1/config/panes3.filter_pane.xml
+lager/My Inspector XE Results - lager/r000mi1/config/panes3.hier_problems_pane.xml
+lager/My Inspector XE Results - lager/r000mi1/config/runmc.options
+lager/My Inspector XE Results - lager/r000mi1/data.0/inspxe-runmc.txt
+lager/My Inspector XE Results - lager/r000mi1/data.0/lager_11996.pdr
+lager/My Inspector XE Results - lager/r000mi1/data.0/lager_11996.pdr.db3
+lager/My Inspector XE Results - lager/r000mi1/data.0/lager_11996.pdr.ste
+lager/My Inspector XE Results - lager/r000mi1/data.0/lager_11996.pdr_bak
+*.jit
+*.inspxe
+lager/My Inspector XE Results - lager/r000mi1/source_cache/snippets.data
+lager/My Inspector XE Results - lager/r000mi1/source_cache/temporary_files.index
+lager/My Inspector XE Results - lager/r000mi1/source_cache/temporary_files/cache_2fb6296e96b683b40c63398fb76db242_avl.cpp
+lager/My Inspector XE Results - lager/r000mi1/summary/summary_data.xml

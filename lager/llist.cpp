@@ -87,35 +87,28 @@ bool llist_element_remove(struct Listnode **list, Datensatz *element)
 	bool result = false;
 	Listnode *current_element = *list;
 	Listnode *previous_element = NULL;
-	if (*list != NULL)
+	while (current_element != NULL)
 	{
-		while (current_element != NULL)
+		if (current_element->dataset == element) //we found the element we are searching for
 		{
-			if (current_element->dataset == element) //we found the element we are searching for
+			if (previous_element != NULL) //we are deleting the element in the list
 			{
-				if (previous_element != NULL) //we are deleting the element in the list
-				{
-					previous_element->next = current_element->next;
-					free(current_element);
-				}
-				else //we are deleting the last element in the list containing 1 element
-				{
-					free(current_element);
-					*list = NULL;
-				}
-				result = true; // element obviously was found
-				break; // quit searching
+				previous_element->next = current_element->next;
+				free(current_element);
 			}
-			else
-			{ // moving through the list
-				previous_element = current_element;
-				current_element = current_element->next;
+			else //we are deleting the last element in the list containing 1 element
+			{
+				free(current_element);
+				*list = NULL;
 			}
+			result = true; // element obviously was found
+			break; // quit searching
 		}
-	}
-	else
-	{
-		result = false;
+		else
+		{ // moving through the list
+			previous_element = current_element;
+			current_element = current_element->next;
+		}
 	}
 	return result;
 }
@@ -124,6 +117,15 @@ bool llist_element_remove(struct Listnode **list, Datensatz *element)
 //returns a NULL-Pointer if the element was not found
 Datensatz *llist_element_find(Listnode **list, Datensatz element)
 {
+	Listnode *current_element = *list;
 	Datensatz *result = NULL;
+	while (current_element != NULL)
+	{
+		if (avl_gleich(current_element->dataset->schluessel, element.schluessel))
+		{
+			result = current_element->dataset;
+			break;
+		}
+	}
 	return result;
 }

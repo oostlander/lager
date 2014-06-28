@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "avl_baum.h"
+#include "llist.h"
+#include <stdbool.h>
 
 
-bool avl_gleich(SchluesselTyp s1, SchluesselTyp s2)
+bool avl_gleich(struct SchluesselTyp s1, struct SchluesselTyp s2)
 {
 	bool result;
 	if (*s1.Teilenummer == *s2.Teilenummer)
@@ -25,7 +27,7 @@ bool avl_gleich(SchluesselTyp s1, SchluesselTyp s2)
 	return result;
 }
 
-bool kleiner(SchluesselTyp s1, SchluesselTyp s2)
+bool kleiner(struct SchluesselTyp s1, struct SchluesselTyp s2)
 {
 	bool result;
 	if (*s1.Teilenummer < *s2.Teilenummer){
@@ -78,7 +80,7 @@ void avl_write(AVL_baum b, int tiefe)
 	}
 }
 
-AVL_knoten *avl_suchen(SchluesselTyp s, AVL_baum b)
+AVL_knoten *avl_suchen(struct SchluesselTyp s, AVL_baum b)
 {
 	AVL_knoten *links; // wo kommt der Schluessel im linken Teilbaum vor ? //
 	if (b == NULL) // Suche erfolglos beendet 
@@ -182,7 +184,7 @@ void avl_balancekorrektur(AVL_baum *v)
 //wieder hergestellt. hoehe_geaendert gibt an, ob
 //im gerade betrachteten Knoten die Balancierung
 //noch geprueft werden muss.
-void avl_einfuegen(Datensatz d, AVL_baum *b)
+void avl_einfuegen(struct Datensatz *d, AVL_baum *b)
 {
 	static bool hoehe_geaendert;
 	// hat sich die Hoehe des Teil-
@@ -196,7 +198,7 @@ void avl_einfuegen(Datensatz d, AVL_baum *b)
 		// Stelle zum Einfuegen gefunden 
 		hier_eingefuegt = true;
 		(*b) = (AVL_knoten *) malloc(sizeof(AVL_knoten));
-		(*b)->avl_daten = d;
+		(*b)->avl_daten = *d;
 		(*b)->avl_beta = 0;
 		(*b)->avl_lsohn = NULL;
 		(*b)->avl_rsohn = NULL;
@@ -204,7 +206,7 @@ void avl_einfuegen(Datensatz d, AVL_baum *b)
 	}
 	else { // noch nicht gefunden; weitersuchen 
 		hier_eingefuegt = false;
-		if (kleiner(d.schluessel,(*b)->avl_daten.schluessel))
+		if (kleiner(d->schluessel,(*b)->avl_daten.schluessel))
 		{
 			avl_einfuegen(d, &((*b)->avl_lsohn));
 			links_eingefuegt = true;
@@ -282,7 +284,7 @@ void avl_minimum_entfernen(AVL_baum *b,
  //gerade betrachteten Teilbaums geaendert hat (und
  //damit auch im Vater des gerade besuchten Knotens
  //die AVL-Balancierung geprueft werden muss).
-void avl_loeschen(SchluesselTyp s, AVL_baum *b)
+void avl_loeschen(struct SchluesselTyp s, AVL_baum *b)
 {
 	bool hier_geloescht;
 	// wurde in aktueller Rekursion geloescht ? 

@@ -30,37 +30,37 @@ void llist_del_list(struct Listnode **start)
 //inserts the "Dataset" in the last place in the "list" given;
 //returns true on sucess. Returns false if memory allocation was not possible
 //please note that the pointer to the pointer of the list ist needed!
-bool llist_insert(Listnode **list, Datensatz *dataset)
+bool llist_insert(struct Listnode **list, struct Datensatz *dataset)
 {
 	bool result = false;
-	Listnode *element = *list;
-	Listnode *previous = NULL;
-	struct Listnode *element_new = (Listnode *)malloc(sizeof(Listnode));
+	struct Listnode *element = *list;
+	struct Listnode *previous = NULL;
+	struct Listnode *element_new = (struct Listnode *)malloc(sizeof(struct Listnode));
 	if (element_new != NULL)
 	{
 		result = true;
 	}
 	element_new->dataset = dataset;
-	while (element != NULL)
+	if (element != NULL)
 	{
-		previous = element;
-		element = element->next;
-	}
-	if (previous = NULL)
-	{
-		element_new->next = *list;
-		*list = element_new;
+		while (element != NULL)
+		{
+			previous = element;
+			element = element->next;
+		}
+		element_new->next = NULL;
+		previous->next = element_new;
 	}
 	else
 	{
-		element_new->next = element;
-		previous->next = element_new;
+		*list = element_new;
+		element_new->next = NULL;
 	}
 	return result;
 }
 
 //counts the length "list"
-int list_length(Listnode *list)
+int list_length(struct Listnode *list)
 {
 	struct Listnode *element; //the current element we are looking at while counting
 	int i = 0;
@@ -82,11 +82,11 @@ int list_length(Listnode *list)
 
 //removes "element" from "list". Returns true if sucessfull, false if element could not be removed (e.g. element was not found)
 //"element" needs to be the pointer to the element to be removed (get it with llist_element_find())
-bool llist_element_remove(struct Listnode **list, Datensatz *element)
+bool llist_element_remove(struct Listnode **list, struct Datensatz *element)
 {
 	bool result = false;
-	Listnode *current_element = *list;
-	Listnode *previous_element = NULL;
+	struct Listnode *current_element = *list;
+	struct Listnode *previous_element = NULL;
 	while (current_element != NULL)
 	{
 		if (current_element->dataset == element) //we found the element we are searching for
@@ -115,10 +115,10 @@ bool llist_element_remove(struct Listnode **list, Datensatz *element)
 
 //returns the pointer to the first element in the list that is equal to "element"
 //returns a NULL-Pointer if the element was not found
-Datensatz *llist_element_find(Listnode **list, Datensatz element)
+struct Datensatz *llist_element_find(struct Listnode **list, struct Datensatz element)
 {
-	Listnode *current_element = *list;
-	Datensatz *result = NULL;
+	struct Listnode *current_element = *list;
+	struct Datensatz *result = NULL;
 	while (current_element != NULL)
 	{
 		if (avl_gleich(current_element->dataset->schluessel, element.schluessel))

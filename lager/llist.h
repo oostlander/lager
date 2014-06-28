@@ -1,12 +1,13 @@
 #ifndef L_LIST_H
 #define L_LIST_H
 #include "avl_baum.h"
+#include <stdbool.h>
 struct Listnode{
-	Datensatz *dataset;
+	struct Datensatz *dataset;
 	struct Listnode *next;
 };
 void llist_print_list(struct Listnode* list);
 void llist_del_list(struct Listnode **start);
-bool llist_insert(Listnode **list, Datensatz *dataset);
-bool llist_element_remove(struct Listnode **list, Datensatz *element);
+bool llist_insert(struct Listnode **list, struct Datensatz *dataset);
+bool llist_element_remove(struct Listnode **list, struct Datensatz *element);
 #endif

@@ -1,29 +1,60 @@
 #include "stdafx.h"
 #include "avl_baum.h"
-
-void datensatz_ausgeben(AVL_knoten *a);
-
-struct Listnode{
-	int zahl;
-	struct Listnode* next;
-};
+#include "llist.h"
+#include <stdbool.h>
 
 const int COMMAND_NUM = 4;
 const int COMMAND_NONE = -1;
 const int COMMAND_MULTIPLE = -2;
 struct Listnode* liste; // a pointer to the first Element of the List
+struct Datensatz *bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht);
 
-void print_list(struct Listnode* list)
+struct warehouse
 {
-	if (list != NULL)
+	int num_shelfs;
+	int num_comp;
+	struct Listnode*** Warehouse;
+};
+
+// allocate "size" bytes of Memory and exits the program if allocation was not possible.
+void *allocateMemory(size_t size)
+{
+	void *p;
+	if ((p = malloc(size)) == NULL)
 	{
-		struct Listnode* temp_list;
-		temp_list = list;
-		printf("%d\n", list->zahl);
-		while (temp_list->next != NULL)
+		printf("\n\nSpeicherprobleme!\n");
+		/* exit program */
+		exit(1);
+	}
+	return p;
+}
+
+void allocateWarehouse(struct warehouse *whouse)
+{
+	int i, j, a, rows, cols;
+	cols = whouse->num_comp;
+	rows = whouse->num_shelfs;
+	struct Listnode ***mat;
+	mat = malloc(cols*sizeof(struct Listnode**));
+	for (i = 0; i < cols; i++) 
+	{
+		mat[i] = malloc(rows*sizeof(struct Listnode*));
+	}
+	whouse->Warehouse = mat;
+	//mat[1][0] = NULL;
+	//mat[0][0] = NULL;
+	//llist_insert(&(mat[0][0]), bulid_dataset(1337, "test", 1, 1.4, 1.6));
+	//llist_insert(&(mat[0][0]), bulid_dataset(1337, "test", 2, 1.4, 1.6));
+}
+
+void initialize_warehouse(struct warehouse *whouse)
+{
+	int i, j;
+	for (i = 0; i < whouse->num_shelfs; i++)
+	{
+		for ( j = 0; j < whouse->num_comp; j++)
 		{
-			temp_list = temp_list->next;
-			printf("%d\n", temp_list->zahl);
+			whouse->Warehouse[i][j] = NULL;
 		}
 	}
 }
@@ -33,7 +64,7 @@ void print_command(int command, bool *terminate, char var[20])
 {
 	switch (command)
 	{
-	case COMMAND_MULTIPLE:
+	case -2:
 		printf("Please enter only one commmand at a time!\n");
 		break;
 	case 0:
@@ -58,11 +89,10 @@ void print_command(int command, bool *terminate, char var[20])
 	}
 }
 
-Datensatz bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht)
+
+struct Datensatz *bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht)
 {
-	SchluesselTyp s = { NULL, NULL, NULL };
-	Datensatz *temp_data = (Datensatz*)malloc(sizeof(Datensatz));
-	//Datensatz temp_data = { Teilenummer, "test", Elementnummer, Breite, Gewicht, s };
+	struct Datensatz *temp_data = (struct Datensatz*)malloc(sizeof(struct Datensatz));
 	temp_data->Teilenummer = Teilenummer;
 	strncpy_s(temp_data->Bezeichner, 29, bez, 29);
 	temp_data->Elementnummer = Elementnummer;
@@ -71,17 +101,22 @@ Datensatz bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Br
 	temp_data->schluessel.Bezeichner = temp_data->Bezeichner;
 	temp_data->schluessel.Elementnummer = &temp_data->Elementnummer;
 	temp_data->schluessel.Teilenummer = &temp_data->Teilenummer;
-	return *temp_data;
+	return temp_data;
 }
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	liste = NULL;
-	char commands[COMMAND_NUM][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };
+	char commands[4][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };// eigentlich COMMAND_NUM
 	int command = -1;
 	AVL_baum baum;
 	avl_create(&baum);
+	struct warehouse my_warehouse;
+	my_warehouse.num_shelfs = 2;
+	my_warehouse.num_comp = 5;
+	allocateWarehouse(&my_warehouse);
+	initialize_warehouse(&my_warehouse);
 
 	////////////////// read in the Data from File ///////////////
 	long t_Teilenummer;
@@ -148,7 +183,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else
 		{
-			print_list(liste);
+			llist_print_list(liste);
 			printf("please enter a number:\n");
 		}
 	}

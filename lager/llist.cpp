@@ -143,14 +143,14 @@ float llist_get_rating(struct warehouse *whouse, struct Listnode **list)
 	b = 0.0;
 	if (l != NULL)
 	{
-		while (l->next != NULL)
+		while (l != NULL)
 		{
 			a = a + (l->dataset->Breite);
 			b = b + (l->dataset->Gewicht);
+			l = l->next;
 		}
 		if (b != 0)
 		{
-			
 			result = ((a / b) / (whouse->max_width / whouse->max_weight));
 		}
 		else
@@ -175,10 +175,11 @@ float llist_get_rating_add(struct warehouse *whouse, struct Listnode **list, str
 	b = element->Gewicht;
 	if (l != NULL)
 	{
-		while (l->next != NULL)
+		while (l != NULL)
 		{
 			a = a + (l->dataset->Breite);
 			b = b + (l->dataset->Gewicht);
+			l = l->next;
 		}
 		result = ((a / b) / (whouse->max_width / whouse->max_weight));
 	}

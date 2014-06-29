@@ -25,8 +25,8 @@ void warehouse_allocate(struct warehouse *whouse)
 void warehouse_initialize(struct warehouse *whouse)
 {
 	int i, j;
-	float max_width = 120;// move this to main
-	float max_weight = 50;
+	whouse->max_width = 120;// move this to main
+	whouse->max_weight = 50;
 	for (i = 0; i < whouse->num_shelfs; i++)
 	{
 		for (j = 0; j < whouse->num_comp; j++)
@@ -68,12 +68,12 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 		{
 			if (whouse->Warehouse[current_shelf][current_comp] != NULL) //is there something in the compartment
 			{
-				llist_get_freespace(whouse,whouse->Warehouse[current_shelf][current_comp], &free_width, &free_weight);
+				llist_get_freespace(whouse,&(whouse->Warehouse[current_shelf][current_comp]), &free_width, &free_weight);
 				if ((free_width>=element->Breite) && (free_weight>=element->Gewicht))//passt ins Fach
 				{
 					// get current rating
 					current_rating = fabsf(llist_get_rating(whouse, &(whouse->Warehouse[current_shelf][current_comp]))
-						- llist_get_rating_add(whouse, whouse->Warehouse[current_shelf][current_comp], element));
+						- llist_get_rating_add(whouse, &(whouse->Warehouse[current_shelf][current_comp]), element));
 					if (current_rating>=whouse->threshold)//rating better than threshold
 					{
 						avl_einfuegen(element, &(whouse->avl_tree));// add to compartment
@@ -104,11 +104,13 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 		current_shelf++;
 	}
 	//TODO
-	if (false) // if not been placed
+	if (!result) // if not been placed
 	{
-		if (false) //best position has been found
+		if (best_rating != 0) //best position has been found
 		{
 			//place at best position found
+			avl_einfuegen(element, &(whouse->avl_tree));
+			llist_insert(&(whouse->Warehouse[best_shelf][best_comp]), element);
 			result = true;
 		}
 		else
@@ -116,5 +118,5 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 			result = false;
 		}
 	}
-	return true;
+	return result;
 }

@@ -64,6 +64,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	struct warehouse my_warehouse;
 	my_warehouse.num_shelfs = 2;
 	my_warehouse.num_comp = 5;
+	my_warehouse.threshold = 0.1;
 	warehouse_allocate(&my_warehouse);
 	warehouse_initialize(&my_warehouse);
 	warehouse_add_object(&my_warehouse, warehouse_build_dataset(3456, "Belag", 1, 30, 2));
@@ -84,8 +85,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	// the value in the "number" variable 
 	while (fscanf(in_file, "%d %s %f %f", &t_Teilenummer, &t_Bezeichner, &t_Breite, &t_Gewicht) == 4)
 	{
-		avl_einfuegen(warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &(my_warehouse.avl_tree));
-		printf("We just read %d\n", t_Teilenummer);
+		if (!(warehouse_add_object(&my_warehouse, warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht))))
+		{
+			printf("We could not read %d\n", t_Teilenummer);
+		}
+		else
+			//avl_einfuegen(warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &(my_warehouse.avl_tree));
+		{
+			printf("We just read %d\n", t_Teilenummer);
+		}
 	}
 	fclose(in_file);
 	///////////////////// reading in done //////////////////////

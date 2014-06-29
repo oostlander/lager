@@ -33,6 +33,9 @@
     <ClInclude Include="llist.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="warehouse.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="llist.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="warehouse.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

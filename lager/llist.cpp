@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "llist.h"
+#include "warehouse.h"
+
 void llist_print_list(struct Listnode* list)
 {
 	if (list != NULL)
@@ -128,4 +130,77 @@ struct Datensatz *llist_element_find(struct Listnode **list, struct Datensatz el
 		}
 	}
 	return result;
+}
+
+//returns the balancing rating of the "list"
+//returns -1 if division by 0 was attempted
+//might be doing this in parallel
+float llist_get_rating(struct warehouse *whouse, struct Listnode **list)
+{
+	float a, b, result;
+	struct Listnode *l = *list;
+	a = 0.0;
+	b = 0.0;
+	if (l != NULL)
+	{
+		while (l->next != NULL)
+		{
+			a = a + (l->dataset->Breite);
+			b = b + (l->dataset->Gewicht);
+		}
+		if (b != 0)
+		{
+			
+			result = ((a / b) / (whouse->max_width / whouse->max_weight));
+		}
+		else
+		{
+			result = -1;
+		}
+	}
+	else
+	{
+		result = 0;
+	}
+	return result;
+}
+
+//returns the balancing rating of the "list" assuming "element" was already added to the list
+//might be doing this in parallel
+float llist_get_rating_add(struct warehouse *whouse, struct Listnode **list, struct Datensatz *element)
+{
+	float a, b, result;
+	struct Listnode *l = *list;
+	a = element->Breite;
+	b = element->Gewicht;
+	if (l != NULL)
+	{
+		while (l->next != NULL)
+		{
+			a = a + (l->dataset->Breite);
+			b = b + (l->dataset->Gewicht);
+		}
+		result = ((a / b) / (whouse->max_width / whouse->max_weight));
+	}
+	else
+	{
+		result = 0;
+	}
+	return result;
+}
+
+// puts the current total weight and width of the load on the compartment "list" in "width" and "weight"
+void llist_get_freespace(struct warehouse *whouse, struct Listnode **list, float *width, float *weight)
+{
+	*width = 0;
+	*weight = 0;
+	struct Listnode *l = *list;
+	while (l != NULL)
+	{
+		*width = *width + (l->dataset->Breite);
+		*weight = *weight + (l->dataset->Gewicht);
+		l = l->next;
+	}
+	*width = whouse->max_width - *width;
+	*weight = whouse->max_weight - *weight;
 }

@@ -1,21 +1,23 @@
 #include "stdafx.h"
 #include "llist.h"
 #include "warehouse.h"
+#include "avl_baum.h"
 
-void llist_print_list(struct Listnode* list)
-{
-	if (list != NULL)
-	{
-		struct Listnode* temp_list;
-		temp_list = list;
-		printf("%d\n", list->dataset);
-		while (temp_list->next != NULL)
-		{
-			temp_list = temp_list->next;
-			printf("%d\n", temp_list->dataset);
-		}
-	}
-}
+//void llist_print_list(struct Listnode* list)
+//{
+//	if (list != NULL)
+//	{
+//		struct Listnode* temp_list;
+//		temp_list = list;
+//		printf("%d\n", list->dataset);
+//		while (temp_list->next != NULL)
+//		{
+//			temp_list = temp_list->next;
+//			printf("%d\n", temp_list->dataset);
+//		}
+//	}
+//}
+
 //delets every element in "start"
 void llist_del_list(struct Listnode **start)
 {
@@ -37,26 +39,26 @@ bool llist_insert(struct Listnode **list, struct Datensatz *dataset)
 	bool result = false;
 	struct Listnode *element = *list;
 	struct Listnode *previous = NULL;
-	struct Listnode *element_new = (struct Listnode *)malloc(sizeof(struct Listnode));
+	struct Listnode *element_new = (struct Listnode *)allocateMemory(sizeof(struct Listnode));
 	if (element_new != NULL)
 	{
 		result = true;
-	}
-	element_new->dataset = dataset;
-	if (element != NULL)
-	{
-		while (element != NULL)
+		element_new->dataset = dataset;
+		if (element != NULL)
 		{
-			previous = element;
-			element = element->next;
+			while (element != NULL)
+			{
+				previous = element;
+				element = element->next;
+			}
+			element_new->next = NULL;
+			previous->next = element_new;
 		}
-		element_new->next = NULL;
-		previous->next = element_new;
-	}
-	else
-	{
-		*list = element_new;
-		element_new->next = NULL;
+		else
+		{
+			*list = element_new;
+			element_new->next = NULL;
+		}
 	}
 	return result;
 }

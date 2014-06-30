@@ -3,13 +3,14 @@
 #include "warehouse.h"
 #include <math.h>
 
+//allocates the necessarry memory for the warehouse struct
 void warehouse_allocate(struct warehouse *whouse)
 {
 	int i, rows, cols;
 	cols = whouse->num_comp;
 	rows = whouse->num_shelfs;
 	struct Listnode ***mat;
-	mat = malloc(cols*sizeof(struct Listnode**));
+	mat = allocateMemory(cols*sizeof(struct Listnode**));
 	for (i = 0; i < cols; i++)
 	{
 		mat[i] = malloc(rows*sizeof(struct Listnode*));
@@ -22,6 +23,7 @@ void warehouse_allocate(struct warehouse *whouse)
 	//llist_insert(&(mat[0][0]), bulid_dataset(1337, "test", 2, 1.4, 1.6));
 }
 
+//initializes the "warehouse" struct
 void warehouse_initialize(struct warehouse *whouse)
 {
 	int i, j;
@@ -36,9 +38,10 @@ void warehouse_initialize(struct warehouse *whouse)
 	}
 }
 
+//returns a fully assembled Datensatz
 struct Datensatz *warehouse_build_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht)
 {
-	struct Datensatz *temp_data = (struct Datensatz*)malloc(sizeof(struct Datensatz));
+	struct Datensatz *temp_data = (struct Datensatz*)allocateMemory(sizeof(struct Datensatz));
 	temp_data->Teilenummer = Teilenummer;
 	strncpy_s(temp_data->Bezeichner, 29, bez, 29);
 	temp_data->Elementnummer = Elementnummer;
@@ -50,6 +53,8 @@ struct Datensatz *warehouse_build_dataset(long Teilenummer, char *bez, int Eleme
 	return temp_data;
 }
 
+//tries to add the "element" to the "warehouse" according to rating function (adds to avl tree and warehouse)
+//returns true if successfull otherwise false
 bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 {
 	bool placed = false;
@@ -68,13 +73,13 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 		{
 			if (whouse->Warehouse[current_shelf][current_comp] != NULL) //is there something in the compartment
 			{
-				llist_get_freespace(whouse,&(whouse->Warehouse[current_shelf][current_comp]), &free_width, &free_weight);
-				if ((free_width>=element->Breite) && (free_weight>=element->Gewicht))//passt ins Fach
+				llist_get_freespace(whouse, &(whouse->Warehouse[current_shelf][current_comp]), &free_width, &free_weight);
+				if ((free_width >= element->Breite) && (free_weight >= element->Gewicht))//passt ins Fach
 				{
 					// get current rating
 					current_rating = fabsf(llist_get_rating(whouse, &(whouse->Warehouse[current_shelf][current_comp]))
 						- llist_get_rating_add(whouse, &(whouse->Warehouse[current_shelf][current_comp]), element));
-					if (current_rating>=whouse->threshold)//rating better than threshold
+					if (current_rating >= whouse->threshold)//rating better than threshold
 					{
 						avl_einfuegen(element, &(whouse->avl_tree));// add to compartment
 						llist_insert(&(whouse->Warehouse[current_shelf][current_comp]), element);
@@ -83,7 +88,7 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 					else
 					{
 						//save rating and pointer if better than best so far
-						if (best_rating<current_rating)
+						if (best_rating < current_rating)
 						{
 							best_rating = current_rating;
 							best_shelf = current_shelf;
@@ -103,7 +108,6 @@ bool warehouse_add_object(struct warehouse *whouse, struct Datensatz *element)
 		}
 		current_shelf++;
 	}
-	//TODO
 	if (!result) // if not been placed
 	{
 		if (best_rating != 0) //best position has been found

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "avl_baum.h"
 #include "llist.h"
-#include"warehouse.h"
+#include "warehouse.h"
 #include <stdbool.h>
 
 const int COMMAND_NUM = 4;
@@ -10,22 +10,24 @@ const int COMMAND_MULTIPLE = -2;
 struct Listnode* liste; // a pointer to the first Element of the List
 struct Datensatz *bulid_dataset(long Teilenummer, char *bez, int Elementnummer, float Breite, float Gewicht);
 
-// allocate "size" bytes of Memory and exits the program if allocation was not possible.
-void *allocateMemory(size_t size)
+write_list(struct warehouse *whouse)
 {
-	void *p;
-	if ((p = malloc(size)) == NULL)
+	FILE *in_file = fopen("Lagerliste.txt", "w"); // write 
+
+	if (!in_file) // equivalent to saying if ( in_file == NULL ) 
 	{
-		printf("\n\nSpeicherprobleme!\n");
-		/* exit program */
-		exit(1);
+		printf("oops, file can't be read\n");
 	}
-	return p;
+	else
+	{
+		//print the formated list to file
+		avl_write_file(whouse->avl_tree, in_file);
+		fclose(in_file);
+	}
 }
 
-
 //prints the command defined by "command"
-void print_command(int command, bool *terminate, char var[20])
+void print_command(int command, bool *terminate, char var[20],struct warehouse *whouse)
 {
 	switch (command)
 	{
@@ -33,20 +35,25 @@ void print_command(int command, bool *terminate, char var[20])
 		printf("Please enter only one commmand at a time!\n");
 		break;
 	case 0:
-		printf("This Program builds a linked list from numbers the user types in.\n");
-		printf("Non numerical input will be disregarded.\n");
-		printf("available commands:\n    help   displays this message\n    list   prints the current list\n    exit   exit the programm\n");
+		printf("This Program bulds and maintains a virtual warehouse of objects\n");
+		printf("They can either be read in through a file or entered manually.\n");
+		printf("available commands:\n    help   displays this message\n    list   prints a list of all objects currently stored to a file\n");
+		printf("    exit   exit the programm\n");
 		break;
 	case 1:
-		//print list
+		write_list(whouse);
+		printf("A list of all items currently stored has been printed to: Lagerliste.txt\n");
 		break;
 	case 2:
 		*terminate = true;
 		break;
 	case 3:
-		printf("I should remove an element...\n");
+		printf("I should remove an element... but some programmer didn't treat me to it... jet\n");
 		//char **test;
 		//element_remove(&liste, strtol(strstr(var, "-r") + (2 * sizeof(char)), test, 10));
+		break;
+	case 4:
+
 		break;
 	default:
 		printf("Input was not all Numbers!\n");
@@ -64,7 +71,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	struct warehouse my_warehouse;
 	my_warehouse.num_shelfs = 2;
 	my_warehouse.num_comp = 5;
-	my_warehouse.threshold = 0.1;
+	my_warehouse.threshold = 0.09;
 	warehouse_allocate(&my_warehouse);
 	warehouse_initialize(&my_warehouse);
 	warehouse_add_object(&my_warehouse, warehouse_build_dataset(3456, "Belag", 1, 30, 2));
@@ -80,24 +87,28 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		printf("oops, file can't be read\n");
 	}
-
-	// attempt to read the next line and store 
-	// the value in the "number" variable 
-	while (fscanf(in_file, "%d %s %f %f", &t_Teilenummer, &t_Bezeichner, &t_Breite, &t_Gewicht) == 4)
+	else
 	{
-		if (!(warehouse_add_object(&my_warehouse, warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht))))
+		// attempt to read the next line and store 
+		// the value in the "number" variable 
+		while (fscanf(in_file, "%d %s %f %f", &t_Teilenummer, t_Bezeichner, &t_Breite, &t_Gewicht) == 4)
 		{
-			printf("We could not read %d\n", t_Teilenummer);
+			if (!(warehouse_add_object(&my_warehouse, warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht))))
+			{
+				printf("We could not read %d\n", t_Teilenummer);
+			}
+			else
+				//avl_einfuegen(warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &(my_warehouse.avl_tree));
+			{
+				printf("We just read %d\n", t_Teilenummer);
+			}
 		}
-		else
-			//avl_einfuegen(warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &(my_warehouse.avl_tree));
-		{
-			printf("We just read %d\n", t_Teilenummer);
-		}
+		fclose(in_file);
 	}
-	fclose(in_file);
 	///////////////////// reading in done //////////////////////
 	avl_write(my_warehouse.avl_tree, 1);
+	printf("testing List:\n");
+	avl_write_list(my_warehouse.avl_tree);
 
 	printf("Listbuilder v1.1\n(c) Klaas P. Oostlander\nThis Program builds a linked list of numbers from user-input\nPlease enter a number:\n");
 	char var[20];    // This is the variable to store input.
@@ -136,11 +147,11 @@ int _tmain(int argc, _TCHAR* argv[])
 					command = j;
 				}
 			}
-			print_command(command, &terminate, var);
+			print_command(command, &terminate, var,&my_warehouse);
 		}
 		else
 		{
-			llist_print_list(liste);
+			//llist_print_list(liste);
 			printf("please enter a number:\n");
 		}
 	}

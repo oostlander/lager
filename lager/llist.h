@@ -6,7 +6,7 @@ struct Listnode{
 	struct Datensatz *dataset;
 	struct Listnode *next;
 };
-void llist_print_list(struct Listnode* list);
+//void llist_print_list(struct Listnode* list);
 void llist_del_list(struct Listnode **start);
 bool llist_insert(struct Listnode **list, struct Datensatz *dataset);
 bool llist_element_remove(struct Listnode **list, struct Datensatz *element);

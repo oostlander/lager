@@ -3,6 +3,18 @@
 #include "llist.h"
 #include <stdbool.h>
 
+// allocate "size" bytes of Memory and exits the program if allocation was not possible.
+void *allocateMemory(size_t size)
+{
+	void *p;
+	if ((p = malloc(size)) == NULL)
+	{
+		printf("\n\nSpeicherprobleme!\n");
+		/* exit program */
+		exit(1);
+	}
+	return p;
+}
 
 bool avl_gleich(struct SchluesselTyp s1, struct SchluesselTyp s2)
 {
@@ -77,6 +89,48 @@ void avl_write(AVL_baum b, int tiefe)
 		printf("\n");
 		// linken Teilbaum ausgeben 
 		avl_write(b->avl_lsohn, tiefe + 1);
+	}
+}
+
+void datensatz_ausgeben_datei(AVL_knoten *a,FILE *file)
+{
+	fprintf(file, "Teil.nr.: %-5i ", a->avl_daten.Teilenummer);
+	fprintf(file, "Bez.: %-12s ", a->avl_daten.Bezeichner);
+	fprintf(file, "Br.: %9f ", a->avl_daten.Breite);
+	fprintf(file, "Gew.: %9f ", a->avl_daten.Gewicht);
+	fprintf(file, "\n");
+}
+
+void datensatz_ausgeben_lang(AVL_knoten *a)
+{
+	printf("Teil.nr.: %-5i ", a->avl_daten.Teilenummer);
+	printf("Bez.: %-12s ", a->avl_daten.Bezeichner);
+	printf("Br.: %9f ", a->avl_daten.Breite);
+	printf("Gew.: %9f ", a->avl_daten.Gewicht);
+	printf("\n");
+}
+
+void avl_write_list(AVL_baum b)
+{
+	if (b != NULL) {
+		// linken Teilbaum ausgeben 
+		avl_write_list(b->avl_lsohn);
+		// aktuellen Knoten ausgeben
+			datensatz_ausgeben_lang(b);
+		// rechten Teilbaum ausgeben 
+		avl_write_list(b->avl_rsohn);
+	}
+}
+
+void avl_write_file(AVL_baum b,FILE *file)
+{
+	if (b != NULL) {
+		// linken Teilbaum ausgeben 
+		avl_write_file(b->avl_lsohn,file);
+		// aktuellen Knoten ausgeben
+		datensatz_ausgeben_datei(b,file);
+		// rechten Teilbaum ausgeben 
+		avl_write_file(b->avl_rsohn,file);
 	}
 }
 
@@ -197,7 +251,7 @@ void avl_einfuegen(struct Datensatz *d, AVL_baum *b)
 	if (*b == NULL) {
 		// Stelle zum Einfuegen gefunden 
 		hier_eingefuegt = true;
-		(*b) = (AVL_knoten *) malloc(sizeof(AVL_knoten));
+		(*b) = (AVL_knoten *) allocateMemory(sizeof(AVL_knoten));
 		(*b)->avl_daten = *d;
 		(*b)->avl_beta = 0;
 		(*b)->avl_lsohn = NULL;
@@ -238,9 +292,7 @@ void avl_einfuegen(struct Datensatz *d, AVL_baum *b)
 minimalem Schluessel im AVL-Baum b und entfernt
 diesen Knoten aus b. h_geaendert gibt an, ob
 sich dabei die Hoehe des Baumes geaendert hat. */
-void avl_minimum_entfernen(AVL_baum *b,
-	AVL_knoten **min,
-	bool *h_geaendert)
+void avl_minimum_entfernen(AVL_baum *b, AVL_knoten **min, bool *h_geaendert)
 {
 	bool hier_entfernt = false;
 	if (*b == NULL) {

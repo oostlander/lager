@@ -30,8 +30,11 @@ typedef AVL_knoten *AVL_baum;
 void avl_create(AVL_baum *b);
 AVL_knoten *avl_suchen(struct SchluesselTyp s,
 	AVL_baum b);
+void *allocateMemory(size_t size);
 void avl_einfuegen(struct Datensatz *d, AVL_baum *b);
 void avl_loeschen(struct SchluesselTyp s, AVL_baum *b);
 void avl_write(AVL_baum b, int tiefe);
+void avl_write_list(AVL_baum b);
+void avl_write_file(AVL_baum b, FILE *file);
 bool avl_gleich(struct SchluesselTyp s1, struct SchluesselTyp s2);
 #endif

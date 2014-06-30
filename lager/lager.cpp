@@ -27,7 +27,7 @@ write_list(struct warehouse *whouse)
 }
 
 //prints the command defined by "command"
-void print_command(int command, bool *terminate, char var[20],struct warehouse *whouse)
+void print_command(int command, bool *terminate, char var[],struct warehouse *whouse)
 {
 	switch (command)
 	{
@@ -37,8 +37,8 @@ void print_command(int command, bool *terminate, char var[20],struct warehouse *
 	case 0:
 		printf("This Program bulds and maintains a virtual warehouse of objects\n");
 		printf("They can either be read in through a file or entered manually.\n");
-		printf("available commands:\n    help   displays this message\n    list   prints a list of all objects currently stored to a file\n");
-		printf("    exit   exit the programm\n");
+		printf("available commands:\n    help   displays this message\n    list   displays an ordered list of all objects stored\n");
+		printf("    print  prints a list of all objects currently stored to a file\n    exit   exit the programm\n");
 		break;
 	case 1:
 		write_list(whouse);
@@ -48,12 +48,9 @@ void print_command(int command, bool *terminate, char var[20],struct warehouse *
 		*terminate = true;
 		break;
 	case 3:
-		printf("I should remove an element... but some programmer didn't treat me to it... jet\n");
+		avl_write_list(whouse->avl_tree);
 		//char **test;
 		//element_remove(&liste, strtol(strstr(var, "-r") + (2 * sizeof(char)), test, 10));
-		break;
-	case 4:
-
 		break;
 	default:
 		printf("Input was not all Numbers!\n");
@@ -66,7 +63,7 @@ void print_command(int command, bool *terminate, char var[20],struct warehouse *
 int _tmain(int argc, _TCHAR* argv[])
 {
 	liste = NULL;
-	char commands[4][10] = { { "help" }, { "list" }, { "exit" }, { "-r" } };// eigentlich COMMAND_NUM
+	char commands[4][10] = { { "help" }, { "print" }, { "exit" }, { "list" } };// eigentlich COMMAND_NUM
 	int command = -1;
 	struct warehouse my_warehouse;
 	my_warehouse.num_shelfs = 2;
@@ -98,7 +95,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				printf("We could not read %d\n", t_Teilenummer);
 			}
 			else
-				//avl_einfuegen(warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht), &(my_warehouse.avl_tree));
 			{
 				printf("We just read %d\n", t_Teilenummer);
 			}
@@ -106,53 +102,65 @@ int _tmain(int argc, _TCHAR* argv[])
 		fclose(in_file);
 	}
 	///////////////////// reading in done //////////////////////
-	avl_write(my_warehouse.avl_tree, 1);
-	printf("testing List:\n");
-	avl_write_list(my_warehouse.avl_tree);
+	///uncomment the following to see the read in avl tree and the final list
+	//avl_write(my_warehouse.avl_tree, 1);
+	//printf("testing List:\n");
+	//avl_write_list(my_warehouse.avl_tree);
 
-	printf("Listbuilder v1.1\n(c) Klaas P. Oostlander\nThis Program builds a linked list of numbers from user-input\nPlease enter a number:\n");
-	char var[20];    // This is the variable to store input.
+	printf("Lagerverwalter v1.1\n(c) Klaas P. Oostlander, Eduard Boitschenko\nThis Program bulds and maintains a virtual warehouse of objects");
+	printf("\nPlease enter an Object to add like this:\n\"Teilenummer\"(int) \"Bezeichner\"(char[30]) \"Breite\"(float) \"Gewicht(float)\"\n");
+	char var[80];    // This is the variable to store input.
 	int i = 0;
 	int varisnum = 0;    // Is var all numbers?  1 for yes, 0 for no.
 	bool terminate = false;
+	//int numarg = 0;
+	//char test[30];//string we use to test what we have read.
 	while (!terminate)
 	{
-		fgets(var, sizeof(var), stdin);
+		//numarg = 0;
 		i = 0; //reset i to 0(we are in a loop her ;-)
-		command = -1; //no command has been chosen jet
-		while (isalnum(var[i]) != 0)
-		{    // Loop until it a character is not alpha-numeric.
-			if (isdigit(var[i]) != 0)
-			{    // Is var[i] a numeric digit?
-				varisnum = 1;
-			}
-			else
-			{
-				varisnum = 0;
-				break;    // If we encounter a non-numeric character, there is no need to keep looping, so just break out.	
-			}
-			i++;    // Move counter to the next element.
-		}
-		if (varisnum == 0)
+		fgets(var, sizeof(var), stdin);
+		if (sscanf(var, "%d %s %f %f", &t_Teilenummer, t_Bezeichner, &t_Breite, &t_Gewicht) == 4)
 		{
-			for (int j = 0; j < COMMAND_NUM; j++)
-			{
-				if (strstr(var, commands[j]) != NULL)
-				{
-					if (command != COMMAND_NONE)
-					{
-						command = COMMAND_MULTIPLE;//two commands (and possibly more) were entered
-						break;
-					}
-					command = j;
-				}
-			}
-			print_command(command, &terminate, var,&my_warehouse);
+			warehouse_add_object(&my_warehouse, warehouse_build_dataset(t_Teilenummer, t_Bezeichner, 1, t_Breite, t_Gewicht));
 		}
 		else
 		{
-			//llist_print_list(liste);
-			printf("please enter a number:\n");
+			command = -1; //no command has been chosen jet
+			while (isalnum(var[i]) != 0)
+			{    // Loop until it a character is not alpha-numeric.
+				if (isdigit(var[i]) != 0)
+				{    // Is var[i] a numeric digit?
+					varisnum = 1;
+				}
+				else
+				{
+					varisnum = 0;
+					break;    // If we encounter a non-numeric character, there is no need to keep looping, so just break out.	
+				}
+				i++;    // Move counter to the next element.
+			}
+			if (varisnum == 0)
+			{
+				for (int j = 0; j < COMMAND_NUM; j++)
+				{
+					if (strstr(var, commands[j]) != NULL)
+					{
+						if (command != COMMAND_NONE)
+						{
+							command = COMMAND_MULTIPLE;//two commands (and possibly more) were entered
+							break;
+						}
+						command = j;
+					}
+				}
+				print_command(command, &terminate, var, &my_warehouse);
+			}
+			else
+			{
+				//llist_print_list(liste);
+				printf("Input not recognized! Please try again.\n");
+			}
 		}
 	}
 
